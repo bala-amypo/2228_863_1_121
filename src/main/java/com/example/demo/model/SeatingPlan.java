@@ -21,5 +21,10 @@ public class SeatingPlan
 
     private LocalDateTime GeneratedAt;
 
-    @preper
+    @prepersist
+
+    public void onCreate()
+    {
+        GeneratedAt = LocalDateTime.now();
+    }
 }
