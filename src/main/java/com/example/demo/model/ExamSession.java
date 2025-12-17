@@ -7,5 +7,13 @@ importjava.util.List;
 @Entity
 public class ExamSession{
     @ID
-    @
+    @GeneratedValue
+
+    private Long id;
+
+    private String courseCode;
+    private LocalDate examDate;
+    private String examTime;
+
+    @ManyToMany
 }
