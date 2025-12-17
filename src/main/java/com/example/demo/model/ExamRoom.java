@@ -10,5 +10,16 @@ public class ExamRoom{
     @Column(unique = true )
 
     private String roomNumber;
-    pr
+    private Integer rows;
+    private Integer columns;
+    private Integer capacity;
+
+
+    @prepersist
+    @preUpdate
+
+    public void ensureCapacitymatches()
+    {
+        this.capacity=rows * columns;
+    }
 }
