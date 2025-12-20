@@ -16,12 +16,12 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     }
 
     @Override
-    public ExamRoom save(ExamRoom room) {
+    public ExamRoom addRoom(ExamRoom room) {
         return examRoomRepository.save(room);
     }
 
     @Override
-    public List<ExamRoom> getAll() {
+    public List<ExamRoom> getAllRooms() {
         return examRoomRepository.findAll();
     }
 }
