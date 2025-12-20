@@ -6,24 +6,12 @@ import java.time.LocalDateTime;
 
 public class SeatingPlan {
 
-
-
     @Id
-
     @GeneratedValue
-
     private Long id;
-
-
-
     @ManyToOne
-
     private ExamSession examSession;
-
-
-
     @ManyToOne
-
     private ExamRoom room;
 
 
