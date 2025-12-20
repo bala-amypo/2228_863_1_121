@@ -32,7 +32,9 @@ public class Student {
 
     private String department;
 
-    private Integer year;
+    @Column(name = "study_year")
+    private int year;
+
 
 
 
