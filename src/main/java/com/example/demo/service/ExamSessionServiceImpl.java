@@ -16,12 +16,17 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     }
 
     @Override
-    public ExamSession save(ExamSession session) {
+    public ExamSession createSession(ExamSession session) {
         return examSessionRepository.save(session);
     }
 
     @Override
-    public List<ExamSession> getAll() {
+    public ExamSession getSession(Long id) {
+        return examSessionRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<ExamSession> getAllSessions() {
         return examSessionRepository.findAll();
     }
 }
