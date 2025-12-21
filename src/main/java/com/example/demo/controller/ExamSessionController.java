@@ -1,3 +1,9 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.ExamSession;
+import com.example.demo.service.ExamSessionService;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/sessions")
 public class ExamSessionController {
@@ -9,8 +15,8 @@ public class ExamSessionController {
     }
 
     @PostMapping
-    public ExamSession create(@RequestBody ExamSession s) {
-        return service.create(s);
+    public ExamSession create(@RequestBody ExamSession session) {
+        return service.create(session);
     }
 
     @GetMapping("/{id}")
