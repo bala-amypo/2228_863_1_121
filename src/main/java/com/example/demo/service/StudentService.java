@@ -1,26 +1,9 @@
-@Service
-public class StudentService {
+package com.example.demo.service;
 
-    private final StudentRepository repo;
+import com.example.demo.model.Student;
+import java.util.List;
 
-    public StudentService(StudentRepository repo) {
-        this.repo = repo;
-    }
-
-    public Student add(Student s) {
-        if (s.getRollNumber() == null)
-            throw new ApiException("roll number missing");
-
-        if (repo.findByRollNumber(s.getRollNumber()).isPresent())
-            throw new ApiException("exists");
-
-        if (s.getYear() < 1 || s.getYear() > 5)
-            throw new ApiException("year");
-
-        return repo.save(s);
-    }
-
-    public List<Student> all() {
-        return repo.findAll();
-    }
+public interface StudentService {
+    Student add(Student student);
+    List<Student> all();
 }
