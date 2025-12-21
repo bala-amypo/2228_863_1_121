@@ -10,23 +10,53 @@ public class ExamRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String roomNumber;
 
-    private Integer rows;
-    private Integer columns;
+    @Column(name = "row_count", nullable = false)
+    private Integer rowCount;
+
+    @Column(name = "column_count", nullable = false)
+    private Integer columnCount;
+
+    @Column(nullable = false)
     private Integer capacity;
 
+    @PrePersist
+    @PreUpdate
     public void ensureCapacityMatches() {
-        this.capacity = this.rows * this.columns;
+        this.capacity = this.rowCount * this.columnCount;
     }
 
-    public Long getId() { return id; }
-    public String getRoomNumber() { return roomNumber; }
-    public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
-    public Integer getRows() { return rows; }
-    public void setRows(Integer rows) { this.rows = rows; }
-    public Integer getColumns() { return columns; }
-    public void setColumns(Integer columns) { this.columns = columns; }
-    public Integer getCapacity() { return capacity; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public Integer getRowCount() {
+        return rowCount;
+    }
+
+    public void setRowCount(Integer rowCount) {
+        this.rowCount = rowCount;
+    }
+
+    public Integer getColumnCount() {
+        return columnCount;
+    }
+
+    public void setColumnCount(Integer columnCount) {
+        this.columnCount = columnCount;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
 }
