@@ -1,13 +1,35 @@
-package com.example.demo.service;
+@Service
+public class SeatingPlanService {
 
-import com.example.demo.model.SeatingPlan;
-import java.util.List;
+    private final ExamSessionRepository sessionRepo;
+    private final ExamRoomRepository roomRepo;
+    private final SeatingPlanRepository planRepo;
 
-public interface SeatingPlanService {
+    public SeatingPlanService(ExamSessionRepository s,
+                              ExamRoomRepository r,
+                              SeatingPlanRepository p) {
+        this.sessionRepo = s;
+        this.roomRepo = r;
+        this.planRepo = p;
+    }
 
-    SeatingPlan generatePlan(Long examSessionId);
+    public SeatingPlan generate(Long sessionId) {
 
-    SeatingPlan getPlan(Long id);
+        ExamSession session = sessionRepo.findById(sessionId)
+                .orElseThrow(() -> new ApiException("session not found"));
 
-    List<SeatingPlan> getPlansBySession(Long examSessionId);
+        int count = session.getStudents().size();
+
+        ExamRoom room = roomRepo.findAll().stream()
+                .filter(r -> r.getCapacity() >= count)
+                .findFirst()
+                .orElseThrow(() -> new ApiException("no room"));
+
+        SeatingPlan plan = new SeatingPlan();
+        plan.setExamSession(session);
+        plan.setRoom(room);
+        plan.setArrangementJson("{\"students\":" + count + "}");
+
+        return planRepo.save(plan);
+    }
 }

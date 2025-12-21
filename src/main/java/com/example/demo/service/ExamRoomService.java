@@ -1,11 +1,24 @@
-package com.example.demo.service;
+@Service
+public class ExamRoomService {
 
-import com.example.demo.model.ExamRoom;
-import java.util.List;
+    private final ExamRoomRepository repo;
 
-public interface ExamRoomService {
+    public ExamRoomService(ExamRoomRepository repo) {
+        this.repo = repo;
+    }
 
-    ExamRoom addRoom(ExamRoom room);
+    public ExamRoom add(ExamRoom r) {
+        if (r.getRows() <= 0 || r.getColumns() <= 0)
+            throw new ApiException("invalid rows or columns");
 
-    List<ExamRoom> getAllRooms();
+        if (repo.findByRoomNumber(r.getRoomNumber()).isPresent())
+            throw new ApiException("exists");
+
+        r.ensureCapacityMatches();
+        return repo.save(r);
+    }
+
+    public List<ExamRoom> all() {
+        return repo.findAll();
+    }
 }

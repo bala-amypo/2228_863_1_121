@@ -1,28 +1,20 @@
-package com.example.demo.controller;
-
-import com.example.demo.model.Student;
-import com.example.demo.service.StudentService;
-
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
 @RestController
 @RequestMapping("/students")
 public class StudentController {
 
-    private final StudentService studentService;
+    private final StudentService service;
 
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
+    public StudentController(StudentService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
+    public Student add(@RequestBody Student s) {
+        return service.add(s);
     }
 
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public List<Student> all() {
+        return service.all();
     }
 }

@@ -1,13 +1,24 @@
-package com.example.demo.service;
+@Service
+public class ExamSessionService {
 
-import com.example.demo.model.ExamSession;
-import java.util.List;
+    private final ExamSessionRepository repo;
 
-public interface ExamSessionService {
+    public ExamSessionService(ExamSessionRepository repo) {
+        this.repo = repo;
+    }
 
-    ExamSession createSession(ExamSession session);
+    public ExamSession create(ExamSession s) {
+        if (s.getExamDate().isBefore(LocalDate.now()))
+            throw new ApiException("past");
 
-    ExamSession getSession(Long id);
+        if (s.getStudents() == null || s.getStudents().isEmpty())
+            throw new ApiException("at least 1 student");
 
-    List<ExamSession> getAllSessions();
+        return repo.save(s);
+    }
+
+    public ExamSession get(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ApiException("session not found"));
+    }
 }

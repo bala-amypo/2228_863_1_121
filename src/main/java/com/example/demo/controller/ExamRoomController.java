@@ -1,28 +1,20 @@
-package com.example.demo.controller;
-
-import com.example.demo.model.ExamRoom;
-import com.example.demo.service.ExamRoomService;
-
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
 @RestController
 @RequestMapping("/rooms")
 public class ExamRoomController {
 
-    private final ExamRoomService examRoomService;
+    private final ExamRoomService service;
 
-    public ExamRoomController(ExamRoomService examRoomService) {
-        this.examRoomService = examRoomService;
+    public ExamRoomController(ExamRoomService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ExamRoom addRoom(@RequestBody ExamRoom room) {
-        return examRoomService.addRoom(room);
+    public ExamRoom add(@RequestBody ExamRoom r) {
+        return service.add(r);
     }
 
     @GetMapping
-    public List<ExamRoom> getAllRooms() {
-        return examRoomService.getAllRooms();
+    public List<ExamRoom> all() {
+        return service.all();
     }
 }

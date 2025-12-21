@@ -1,33 +1,15 @@
-package com.example.demo.controller;
-
-import com.example.demo.model.SeatingPlan;
-import com.example.demo.service.SeatingPlanService;
-
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
 @RestController
 @RequestMapping("/plans")
 public class SeatingPlanController {
 
-    private final SeatingPlanService seatingPlanService;
+    private final SeatingPlanService service;
 
-    public SeatingPlanController(SeatingPlanService seatingPlanService) {
-        this.seatingPlanService = seatingPlanService;
+    public SeatingPlanController(SeatingPlanService service) {
+        this.service = service;
     }
 
     @PostMapping("/generate/{sessionId}")
-    public SeatingPlan generatePlan(@PathVariable Long sessionId) {
-        return seatingPlanService.generatePlan(sessionId);
-    }
-
-    @GetMapping("/{planId}")
-    public SeatingPlan getPlan(@PathVariable Long planId) {
-        return seatingPlanService.getPlan(planId);
-    }
-
-    @GetMapping("/session/{sessionId}")
-    public List<SeatingPlan> getPlansBySession(@PathVariable Long sessionId) {
-        return seatingPlanService.getPlansBySession(sessionId);
+    public SeatingPlan generate(@PathVariable Long sessionId) {
+        return service.generate(sessionId);
     }
 }
