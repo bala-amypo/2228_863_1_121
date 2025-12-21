@@ -8,13 +8,8 @@ import java.time.LocalDateTime;
 public class SeatingPlan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(length = 5000)
-    private String arrangementJson;
-
-    private LocalDateTime generatedAt;
 
     @ManyToOne
     private ExamSession examSession;
@@ -22,49 +17,18 @@ public class SeatingPlan {
     @ManyToOne
     private ExamRoom room;
 
-    // ✅ REQUIRED: no-arg constructor
-    public SeatingPlan() {
+    @Column(columnDefinition = "TEXT")
+    private String arrangementJson;
+
+    private LocalDateTime generatedAt;
+
+    @PrePersist
+    public void onCreate() {
+        generatedAt = LocalDateTime.now();
     }
 
-    // ✅ GETTERS & SETTERS (MANDATORY)
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getArrangementJson() {
-        return arrangementJson;
-    }
-
-    public void setArrangementJson(String arrangementJson) {
-        this.arrangementJson = arrangementJson;
-    }
-
-    public LocalDateTime getGeneratedAt() {
-        return generatedAt;
-    }
-
-    public void setGeneratedAt(LocalDateTime generatedAt) {
-        this.generatedAt = generatedAt;
-    }
-
-    public ExamSession getExamSession() {
-        return examSession;
-    }
-
-    public void setExamSession(ExamSession examSession) {
-        this.examSession = examSession;
-    }
-
-    public ExamRoom getRoom() {
-        return room;
-    }
-
-    public void setRoom(ExamRoom room) {
-        this.room = room;
-    }
+    public Long getId() { return id; }
+    public void setExamSession(ExamSession examSession) { this.examSession = examSession; }
+    public void setRoom(ExamRoom room) { this.room = room; }
+    public void setArrangementJson(String arrangementJson) { this.arrangementJson = arrangementJson; }
 }
