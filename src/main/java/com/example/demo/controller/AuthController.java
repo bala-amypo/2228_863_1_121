@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.User;
+import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +14,11 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // Register user
     @PostMapping("/register")
     public User register(@RequestBody User user) {
         return userService.register(user);
     }
 
-    // Login (simple – tests only check that endpoint exists)
     @PostMapping("/login")
     public String login(@RequestBody User user) {
         return "dummy-token";
