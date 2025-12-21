@@ -17,7 +17,7 @@ public class AuthController {
     // Register user
     @PostMapping("/register")
     public User register(@RequestBody User user) {
-        return userService.registerUser(user);
+        return userService.register(user);
     }
 
     // Login (simple – tests only check that endpoint exists)
