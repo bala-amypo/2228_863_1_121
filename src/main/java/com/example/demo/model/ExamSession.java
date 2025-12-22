@@ -37,7 +37,13 @@ public class ExamSession {
     public String getExamTime() {
      return examTime;
       }
-    public void setExamTime(String examTime) { this.examTime = examTime; }
-    public Set<Student> getStudents() { return students; }
-    public void setStudents(Set<Student> students) { this.students = students; }
+    public void setExamTime(String examTime) { 
+    this.examTime = examTime; 
+    }
+    public Set<Student> getStudents() {
+     return students; 
+     }
+    public void setStudents(Set<Student> students) {
+     this.students = students; 
+     }
 }
