@@ -7,8 +7,7 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
 
-    private final StudentService service;
-
+    private final StudentService service;   
     public StudentController(StudentService service) {
         this.service = service;
     }
