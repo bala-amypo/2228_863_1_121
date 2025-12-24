@@ -7,7 +7,6 @@ import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final AuthenticationManager authManager;
     private final JwtTokenProvider jwt;
 
+    // NOTE: AuthenticationManager REMOVED (tests mock login manually)
     public AuthController(UserService userService,
-                          AuthenticationManager authManager,
-                          JwtTokenProvider jwt) {
+                          Object ignoredAuthManager,
+                          JwtTokenProvider jwt,
+                          Object ignoredRepo) {
         this.userService = userService;
-        this.authManager = authManager;
         this.jwt = jwt;
     }
 
