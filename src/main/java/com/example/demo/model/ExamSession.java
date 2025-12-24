@@ -2,21 +2,18 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "exam_sessions")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ExamSession {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private String courseCode;
@@ -24,10 +21,5 @@ public class ExamSession {
     private String examTime;
 
     @ManyToMany
-    @JoinTable(
-            name = "exam_session_students",
-            joinColumns = @JoinColumn(name = "session_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private List<Student> students;
+    private Set<Student> students;
 }
