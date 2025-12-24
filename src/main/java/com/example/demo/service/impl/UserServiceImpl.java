@@ -1,26 +1,30 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-import org.springframework.stereotype.Service;
-
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepo;
+    private final BCryptPasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository userRepo,
+                           BCryptPasswordEncoder encoder) {
+        this.userRepo = userRepo;
+        this.encoder = encoder;
     }
 
     @Override
     public User register(User user) {
-        return userRepository.save(user);
+        if (userRepo.findByEmail(user.getEmail()).isPresent())
+            throw new ApiException("email exists");
+
+        user.setPassword(encoder.encode(user.getPassword()));
+        if (user.getRole() == null)
+            user.setRole("STAFF");
+
+        return userRepo.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new ApiException("user not found"));
     }
 }
