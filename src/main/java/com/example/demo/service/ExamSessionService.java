@@ -6,5 +6,5 @@ public interface ExamSessionService {
 
     ExamSession createSession(ExamSession session);
 
-    ExamSession getSessionById(Long id);
+    ExamSession getSession(Long sessionId);
 }
