@@ -3,26 +3,20 @@ package com.example.demo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    // 🔐 Secret key (HS256 requires 256-bit key)
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final String SECRET_KEY = "my-secret-key-1234567890";
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour
 
-    // ⏱ Token validity (1 hour)
-    private final long validityInMs = 60 * 60 * 1000;
-
-    // ✅ Generate JWT Token
+    // Generate JWT token
     public String generateToken(String email, String role, Long userId) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityInMs);
+        Date expiry = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
                 .setSubject(email)
@@ -30,16 +24,15 @@ public class JwtTokenProvider {
                 .claim("userId", userId)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    // ✅ Validate Token
+    // Validate token
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
+            Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
@@ -47,16 +40,14 @@ public class JwtTokenProvider {
         }
     }
 
-    // ✅ Extract Email
+    // Extract email
     public String getEmailFromToken(String token) {
         return getClaims(token).getSubject();
     }
 
-    // ✅ Extract Claims
     private Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody();
     }
