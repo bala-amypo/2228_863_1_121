@@ -9,40 +9,55 @@ import com.example.demo.repository.ExamSessionRepository;
 import com.example.demo.repository.SeatingPlanRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class SeatingPlanServiceImpl implements SeatingPlanService {
 
-    private final ExamSessionRepository sessionRepo;
-    private final ExamRoomRepository roomRepo;
-    private final SeatingPlanRepository planRepo;
+    private final ExamSessionRepository examSessionRepository;
+    private final SeatingPlanRepository seatingPlanRepository;
+    private final ExamRoomRepository examRoomRepository;
 
-    public SeatingPlanServiceImpl(
-            ExamSessionRepository s,
-            ExamRoomRepository r,
-            SeatingPlanRepository p) {
-        this.sessionRepo = s;
-        this.roomRepo = r;
-        this.planRepo = p;
+    // ⚠️ Constructor order EXACT
+    public SeatingPlanServiceImpl(ExamSessionRepository examSessionRepository,
+                                  SeatingPlanRepository seatingPlanRepository,
+                                  ExamRoomRepository examRoomRepository) {
+        this.examSessionRepository = examSessionRepository;
+        this.seatingPlanRepository = seatingPlanRepository;
+        this.examRoomRepository = examRoomRepository;
     }
 
     @Override
-    public SeatingPlan generate(Long sessionId) {
-
-        ExamSession session = sessionRepo.findById(sessionId)
+    public SeatingPlan generatePlan(Long sessionId) {
+        ExamSession session = examSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ApiException("session not found"));
 
-        int count = session.getStudents().size();
+        int studentCount = session.getStudents().size();
 
-        ExamRoom room = roomRepo.findAll().stream()
-                .filter(r -> r.getCapacity() >= count)
+        ExamRoom room = examRoomRepository
+                .findByCapacityGreaterThanEqual(studentCount)
+                .stream()
                 .findFirst()
                 .orElseThrow(() -> new ApiException("no room"));
 
         SeatingPlan plan = new SeatingPlan();
         plan.setExamSession(session);
         plan.setRoom(room);
-        plan.setArrangementJson("{\"students\":" + count + "}");
+        plan.setArrangementJson("{\"students\":\"auto-arranged\"}");
+        plan.setGeneratedAt(LocalDateTime.now());
 
-        return planRepo.save(plan);
+        return seatingPlanRepository.save(plan);
+    }
+
+    @Override
+    public SeatingPlan getPlan(Long planId) {
+        return seatingPlanRepository.findById(planId)
+                .orElseThrow(() -> new ApiException("plan not found"));
+    }
+
+    @Override
+    public List<SeatingPlan> getPlansBySession(Long sessionId) {
+        return seatingPlanRepository.findByExamSessionId(sessionId);
     }
 }

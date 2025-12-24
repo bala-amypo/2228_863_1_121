@@ -10,29 +10,23 @@ import java.util.List;
 @Service
 public class ExamRoomServiceImpl implements ExamRoomService {
 
-    private final ExamRoomRepository repo;
+    private final ExamRoomRepository examRoomRepository;
 
-    public ExamRoomServiceImpl(ExamRoomRepository repo) {
-        this.repo = repo;
+    // ⚠️ Exact constructor signature
+    public ExamRoomServiceImpl(ExamRoomRepository examRoomRepository) {
+        this.examRoomRepository = examRoomRepository;
     }
 
     @Override
-    public ExamRoom add(ExamRoom r) {
-
-        if (r.getRowCount() <= 0 || r.getColumnCount() <= 0) {
-            throw new ApiException("Invalid row or column count");
+    public ExamRoom addRoom(ExamRoom room) {
+        if (examRoomRepository.findByRoomNumber(room.getRoomNumber()).isPresent()) {
+            throw new ApiException("exists");
         }
-
-        if (repo.findByRoomNumber(r.getRoomNumber()).isPresent()) {
-            throw new ApiException("Exam room already exists");
-        }
-
-        // capacity is auto-calculated by @PrePersist/@PreUpdate
-        return repo.save(r);
+        return examRoomRepository.save(room);
     }
 
     @Override
-    public List<ExamRoom> all() {
-        return repo.findAll();
+    public List<ExamRoom> getAllRooms() {
+        return examRoomRepository.findAll();
     }
 }

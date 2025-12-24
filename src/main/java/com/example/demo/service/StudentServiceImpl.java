@@ -10,28 +10,26 @@ import java.util.List;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository repo;
+    private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository repo) {
-        this.repo = repo;
+    // ⚠️ Exact constructor signature
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     @Override
-    public Student add(Student s) {
-        if (s.getRollNumber() == null)
-            throw new ApiException("roll number missing");
-
-        if (repo.findByRollNumber(s.getRollNumber()).isPresent())
+    public Student addStudent(Student student) {
+        if (studentRepository.findByRollNumber(student.getRollNumber()).isPresent()) {
             throw new ApiException("exists");
-
-        if (s.getYear() < 1 || s.getYear() > 5)
+        }
+        if (student.getYear() < 1 || student.getYear() > 5) {
             throw new ApiException("year");
-
-        return repo.save(s);
+        }
+        return studentRepository.save(student);
     }
 
     @Override
-    public List<Student> all() {
-        return repo.findAll();
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 }
