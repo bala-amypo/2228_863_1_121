@@ -19,5 +19,6 @@ public class Student {
 
     private String name;
     private String department;
+    @Column(name = "study_year")
     private Integer year;
 }
