@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Set;
-
+@Builder
 @Entity
 @Table(name = "exam_sessions")
 public class ExamSession {
