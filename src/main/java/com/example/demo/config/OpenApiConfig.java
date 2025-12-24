@@ -23,14 +23,14 @@ public class OpenApiConfig {
                 .bearerFormat("JWT");
 
         return new OpenAPI()
-                // Server must match local testing
+               
                 .servers(List.of(
                         new Server().url("https://9119.32procr.amypo.ai/")
                 ))
-                // Register security scheme
+               
                 .components(new Components()
                         .addSecuritySchemes("BearerAuth", bearerScheme))
-                // Apply security globally
+                
                 .addSecurityItem(new SecurityRequirement()
                         .addList("BearerAuth"));
     }
