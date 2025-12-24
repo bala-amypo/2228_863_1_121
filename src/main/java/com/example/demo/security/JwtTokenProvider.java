@@ -13,34 +13,25 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final Key key;
-    private final long expiration;
+    private final long validityInMs;
 
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") long expiration
+            @Value("${jwt.expiration}") long validityInMs
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.expiration = expiration;
+        this.validityInMs = validityInMs;
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String username) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + expiration);
+        Date expiry = new Date(now.getTime() + validityInMs);
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
     }
 }

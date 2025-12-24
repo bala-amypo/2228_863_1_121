@@ -17,6 +17,7 @@ public class ExamSession {
     private Long id;
 
     private String courseCode;
+    @Column(name = "exam_date")
     private LocalDate examDate;
     private String examTime;
 
