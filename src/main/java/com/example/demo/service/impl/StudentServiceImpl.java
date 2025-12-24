@@ -1,28 +1,26 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.model.Student;
-import com.example.demo.repository.StudentRepository;
-import com.example.demo.service.StudentService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository studentRepository;
+    private final StudentRepository repo;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentServiceImpl(StudentRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
-    public Student addStudent(Student student) {
-        return studentRepository.save(student);
+    public Student addStudent(Student s) {
+        if (s.getRollNumber() == null)
+            throw new ApiException("roll");
+
+        if (repo.findByRollNumber(s.getRollNumber()).isPresent())
+            throw new ApiException("exists");
+
+        if (s.getYear() < 1 || s.getYear() > 5)
+            throw new ApiException("year");
+
+        return repo.save(s);
     }
 
-    @Override
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return repo.findAll();
     }
 }
