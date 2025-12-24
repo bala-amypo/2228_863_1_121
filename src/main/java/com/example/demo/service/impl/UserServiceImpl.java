@@ -18,17 +18,19 @@ public class UserServiceImpl implements UserService {
         this.encoder = encoder;
     }
 
-    public User register(User user) {
-        if (repo.findByEmail(user.getEmail()).isPresent())
-            throw new ApiException("exists");
+    @Override
+    public User register(User u) {
+        if (repo.findByEmail(u.getEmail()).isPresent())
+            throw new ApiException("email exists");
 
-        if (user.getRole() == null)
-            user.setRole("STAFF");
+        if (u.getRole() == null)
+            u.setRole("STAFF");
 
-        user.setPassword(encoder.encode(user.getPassword()));
-        return repo.save(user);
+        u.setPassword(encoder.encode(u.getPassword()));
+        return repo.save(u);
     }
 
+    @Override
     public User findByEmail(String email) {
         return repo.findByEmail(email)
                 .orElseThrow(() -> new ApiException("user not found"));

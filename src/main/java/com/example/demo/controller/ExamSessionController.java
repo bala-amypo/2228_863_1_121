@@ -2,30 +2,26 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ExamSession;
 import com.example.demo.service.ExamSessionService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sessions")
-@Tag(name = "Exam Sessions")
 public class ExamSessionController {
 
-    private final ExamSessionService examSessionService;
+    private final ExamSessionService service;
 
-    public ExamSessionController(ExamSessionService examSessionService) {
-        this.examSessionService = examSessionService;
+    public ExamSessionController(ExamSessionService service) {
+        this.service = service;
     }
 
-    @Operation(summary = "Create an exam session")
     @PostMapping
-    public ExamSession createSession(@RequestBody ExamSession session) {
-        return examSessionService.createSession(session);
+    public ResponseEntity<ExamSession> create(@RequestBody ExamSession s) {
+        return ResponseEntity.ok(service.createSession(s));
     }
 
-    @Operation(summary = "Get exam session by ID")
-    @GetMapping("/{sessionId}")
-    public ExamSession getSession(@PathVariable Long sessionId) {
-        return examSessionService.getSession(sessionId);
+    @GetMapping("/{id}")
+    public ResponseEntity<ExamSession> get(@PathVariable long id) {
+        return ResponseEntity.ok(service.getSession(id));
     }
 }
