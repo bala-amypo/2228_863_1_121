@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -13,37 +14,58 @@ public class ExamSession {
     private Long id;
 
     private String courseCode;
+
     private LocalDate examDate;
+
     private String examTime;
 
     @ManyToMany
+    @JoinTable(
+            name = "exam_session_students",
+            joinColumns = @JoinColumn(name = "exam_session_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
     private Set<Student> students;
 
-    public Long getId() { 
-    return id; 
+    public ExamSession() {}
+
+    public Long getId() {
+        return id;
     }
-    public String getCourseCode() { 
-    return courseCode; 
+
+    public String getCourseCode() {
+        return courseCode;
     }
-    public void setCourseCode(String courseCode) {
-     this.courseCode = courseCode; 
-     }
+
     public LocalDate getExamDate() {
-     return examDate;
-      }
-    public void setExamDate(LocalDate examDate) {
-     this.examDate = examDate; 
-     }
-    public String getExamTime() {
-     return examTime;
-      }
-    public void setExamTime(String examTime) { 
-    this.examTime = examTime; 
+        return examDate;
     }
+
+    public String getExamTime() {
+        return examTime;
+    }
+
     public Set<Student> getStudents() {
-     return students; 
-     }
+        return students;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public void setExamDate(LocalDate examDate) {
+        this.examDate = examDate;
+    }
+
+    public void setExamTime(String examTime) {
+        this.examTime = examTime;
+    }
+
     public void setStudents(Set<Student> students) {
-     this.students = students; 
-     }
+        this.students = students;
+    }
 }
