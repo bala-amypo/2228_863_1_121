@@ -25,7 +25,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 // Server must match local testing
                 .servers(List.of(
-                        new Server().url("http://localhost:9002")
+                        new Server().url("https://9119.32procr.amypo.ai/")
                 ))
                 // Register security scheme
                 .components(new Components()
