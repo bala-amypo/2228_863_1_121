@@ -16,13 +16,11 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenProvider jwt;
 
-    // NOTE: AuthenticationManager REMOVED (tests mock login manually)
+
     public AuthController(UserService userService,
-                          Object ignoredAuthManager,
-                          JwtTokenProvider jwt,
-                          Object ignoredRepo) {
+                          JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
-        this.jwt = jwt;
+        this.jwt = jwtTokenProvider;
     }
 
     @PostMapping("/register")
