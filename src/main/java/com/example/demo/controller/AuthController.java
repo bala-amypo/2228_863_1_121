@@ -38,6 +38,8 @@ public class AuthController {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
+        user.setRole("USER");
+
         userService.register(user);
         return ResponseEntity.ok("User registered");
     }
@@ -45,6 +47,7 @@ public class AuthController {
     @Operation(summary = "Login and generate JWT token")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -52,7 +55,14 @@ public class AuthController {
                 )
         );
 
-        String token = jwtTokenProvider.generateToken(authentication);
+        User user = userService.findByEmail(request.getEmail());
+
+        String token = jwtTokenProvider.generateToken(
+                user.getEmail(),
+                user.getRole(),
+                user.getId()
+        );
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }

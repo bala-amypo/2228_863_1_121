@@ -10,39 +10,31 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "my-secret-key-1234567890";
-    private static final long EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour
+    private final String SECRET_KEY = "mySecretKey123";
+    private final long EXPIRATION_TIME = 86400000; // 1 day
 
-    // Generate JWT token
     public String generateToken(String email, String role, Long userId) {
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + EXPIRATION_TIME);
-
         return Jwts.builder()
                 .setSubject(email)
                 .claim("role", role)
                 .claim("userId", userId)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    // Validate token
+    public String getEmailFromToken(String token) {
+        return getClaims(token).getSubject();
+    }
+
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token);
+            getClaims(token);
             return true;
         } catch (Exception e) {
             return false;
         }
-    }
-
-    // Extract email
-    public String getEmailFromToken(String token) {
-        return getClaims(token).getSubject();
     }
 
     private Claims getClaims(String token) {
