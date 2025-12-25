@@ -17,12 +17,13 @@ public class ExamRoomController {
     public ExamRoomController(ExamRoomService service){ this.service = service; }
 
     @PostMapping
-    public ResponseEntity<ExamRoom> add(@RequestBody ExamRoom room) {
-        return ResponseEntity.ok(examRoomService.addRoom(room));
+        public ResponseEntity<ExamRoom> add(ExamRoom r){
+        return ResponseEntity.ok(service.addRoom(r));
     }
 
+
     @GetMapping
-    public ResponseEntity<List<ExamRoom>> list() {
-        return ResponseEntity.ok(examRoomService.getAllRooms());
+    public ResponseEntity<List<ExamRoom>> list(){
+        return ResponseEntity.ok(service.getAllRooms());
     }
 }
