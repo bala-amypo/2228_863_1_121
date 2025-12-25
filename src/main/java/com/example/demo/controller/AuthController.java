@@ -36,7 +36,10 @@ public class AuthController {
 
     @PostMapping("/register")
    public ResponseEntity<User> register(RegisterRequest req){
-        User u = User.builder().name(req.getName()).email(req.getEmail()).password(req.getPassword()).role(req.getRole()).build();
+       User user = new User();
+user.setEmail(request.getEmail());
+user.setPassword(encodedPassword);
+user.setRole("USER");
         return ResponseEntity.ok(userService.register(u));
     }
 
