@@ -1,11 +1,11 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.ExamSession;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
-public interface ExamSessionRepository extends JpaRepository<ExamSession, Long> {
+public interface ExamSessionRepository {
+    ExamSession save(ExamSession s);
+    Optional<ExamSession> findById(Long id);
     List<ExamSession> findByExamDate(LocalDate date);
 }
