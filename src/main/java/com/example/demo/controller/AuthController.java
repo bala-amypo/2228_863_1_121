@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,16 +21,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public Map<String, String> login(@RequestBody Map<String, String> body) {
 
-        User user = userService.login(
-                request.getEmail(),
-                request.getPassword()
+        String email = body.get("email");
+        String password = body.get("password");
+
+        User user = userService.login(email, password);
+
+        String token = jwtTokenProvider.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
         );
 
-       
-        String token = jwtTokenProvider.generateToken(user.getEmail());
-
-        return new AuthResponse(token);
+        return Map.of("token", token);
     }
 }

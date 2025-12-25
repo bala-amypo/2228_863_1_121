@@ -1,22 +1,10 @@
-package com.example.demo.model;
+package com.example.demo.service;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.example.demo.model.User;
 
-@Entity
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "users")
-public class User {
+public interface UserService {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    User register(String name, String email, String password);
 
-    private String name;
-    private String email;
-    private String password;
-    private String role;
+    User login(String email, String password);
 }

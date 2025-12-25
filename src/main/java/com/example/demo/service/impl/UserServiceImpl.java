@@ -13,26 +13,34 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repo;
     private final BCryptPasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository repo, BCryptPasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository repo,
+                           BCryptPasswordEncoder encoder) {
         this.repo = repo;
         this.encoder = encoder;
     }
 
     @Override
-    public User register(User u) {
-        if (repo.findByEmail(u.getEmail()).isPresent())
+    public User register(String name, String email, String password) {
+        if (repo.findByEmail(email).isPresent())
             throw new ApiException("email exists");
 
-        if (u.getRole() == null)
-            u.setRole("STAFF");
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(encoder.encode(password));
+        user.setRole("STAFF");
 
-        u.setPassword(encoder.encode(u.getPassword()));
-        return repo.save(u);
+        return repo.save(user);
     }
 
     @Override
-    public User findByEmail(String email) {
-        return repo.findByEmail(email)
-                .orElseThrow(() -> new ApiException("user not found"));
+    public User login(String email, String password) {
+        User user = repo.findByEmail(email)
+                .orElseThrow(() -> new ApiException("invalid credentials"));
+
+        if (!encoder.matches(password, user.getPassword()))
+            throw new ApiException("invalid credentials");
+
+        return user;
     }
 }
