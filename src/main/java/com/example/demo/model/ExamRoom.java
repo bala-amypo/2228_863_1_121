@@ -20,16 +20,6 @@ public class ExamRoom {
 
     private Integer capacity;
 
-    // ----- getters -----
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getRoomNumber() {
-        return roomNumber;
-    }
-
     public Integer getRowCount() {
         return rowCount;
     }
@@ -42,10 +32,11 @@ public class ExamRoom {
         return capacity;
     }
 
-    // ----- helper method used by service -----
-    public void ensureCapacityMatches() {
-        if (rowCount != null && columnCount != null) {
-            this.capacity = rowCount * columnCount;
-        }
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
     }
 }
