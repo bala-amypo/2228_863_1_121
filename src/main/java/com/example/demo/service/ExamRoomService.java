@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.model.ExamRoom;
+import com.example.demo.entity.ExamRoom;
 import java.util.List;
 
 public interface ExamRoomService {
-    ExamRoom addRoom(ExamRoom r);
-    List<ExamRoom> getAllRooms();
+
+    ExamRoom save(ExamRoom examRoom);
+
+    List<ExamRoom> getAll();
 }

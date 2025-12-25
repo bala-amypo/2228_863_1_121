@@ -1,25 +1,28 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ApiException;
-import com.example.demo.model.ExamRoom;
+import com.example.demo.entity.ExamRoom;
 import com.example.demo.repository.ExamRoomRepository;
 import com.example.demo.service.ExamRoomService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service   // ⭐ THIS IS THE MOST IMPORTANT LINE
 public class ExamRoomServiceImpl implements ExamRoomService {
-    private final ExamRoomRepository repo;
-    public ExamRoomServiceImpl(ExamRoomRepository repo){ this.repo = repo; }
 
-    @Override
-    public ExamRoom addRoom(ExamRoom r){
-        if(r == null || r.getRoomNumber()==null) throw new ApiException("Missing fields");
-        if(r.getRows()==null || r.getColumns()==null || r.getRows()<=0 || r.getColumns()<=0) throw new ApiException("Invalid room size");
-        if(repo.findByRoomNumber(r.getRoomNumber()).isPresent()) throw new ApiException("Room exists");
-        r.ensureCapacityMatches();
-        return repo.save(r);
+    private final ExamRoomRepository examRoomRepository;
+
+    public ExamRoomServiceImpl(ExamRoomRepository examRoomRepository) {
+        this.examRoomRepository = examRoomRepository;
     }
 
     @Override
-    public List<ExamRoom> getAllRooms(){ return repo.findAll(); }
+    public ExamRoom save(ExamRoom examRoom) {
+        return examRoomRepository.save(examRoom);
+    }
+
+    @Override
+    public List<ExamRoom> getAll() {
+        return examRoomRepository.findAll();
+    }
 }

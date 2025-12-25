@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms") 
+@RequestMapping("/api/rooms")
 public class ExamRoomController {
 
-   private final ExamRoomService service;
-    public ExamRoomController(ExamRoomService service){ this.service = service; }
+    private final ExamRoomService examRoomService;
 
+    public ExamRoomController(ExamRoomService examRoomService) {
+        this.examRoomService = examRoomService;
+    }
     @PostMapping
         public ResponseEntity<ExamRoom> add(ExamRoom r){
         return ResponseEntity.ok(service.addRoom(r));
