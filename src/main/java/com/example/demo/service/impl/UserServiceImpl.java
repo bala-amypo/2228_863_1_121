@@ -1,33 +1,27 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ApiException;
-import com.example.demo.model.User;
+import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+@Service   // ⭐ THIS IS REQUIRED
 public class UserServiceImpl implements UserService {
-    private final UserRepository repo;
-    private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder){
-        this.repo = repo; this.encoder = encoder;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public User register(User u){
-        if(u==null || u.getEmail()==null || u.getPassword()==null || u.getName()==null) throw new ApiException("Missing fields");
-        if(repo.findByEmail(u.getEmail()).isPresent()) throw new ApiException("Email exists");
-        if(u.getRole()==null) u.setRole("STAFF");
-        u.setPassword(encoder.encode(u.getPassword()));
-        return repo.save(u);
+    public User register(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public User findByEmail(String email){
-        Optional<User> o = repo.findByEmail(email);
-        return o.orElseThrow(() -> new ApiException("User not found"));
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
