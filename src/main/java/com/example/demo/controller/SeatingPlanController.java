@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seating-plan")
-@AllArgsConstructor
+@RequestMapping("/seating-plan") 
 public class SeatingPlanController {
 
     private final SeatingPlanService service;

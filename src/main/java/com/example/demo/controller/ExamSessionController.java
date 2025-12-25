@@ -7,8 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/sessions")
-@RequiredArgsConstructor
+@RequestMapping("/api/sessions") 
 public class ExamSessionController {
 
     private final ExamSessionService service;
