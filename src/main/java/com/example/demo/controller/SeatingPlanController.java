@@ -16,10 +16,10 @@ public class SeatingPlanController {
     public SeatingPlanController(SeatingPlanService service){ this.service = service; }
 
   
-    @GetMapping("/{id}")
-    public ResponseEntity<SeatingPlan> get(Long id){
-        return ResponseEntity.ok(service.getPlan(id));
-    }
+@GetMapping("/{sessionId}")
+public List<SeatingPlan> getPlansBySession(@PathVariable Long sessionId) {
+    return service.getPlansBySession(sessionId);
+}
 
     @GetMapping("/session/{sessionId}")
     public ResponseEntity<List<SeatingPlan>> list(Long sessionId){

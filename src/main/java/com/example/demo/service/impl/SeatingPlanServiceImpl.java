@@ -1,6 +1,6 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.SeatingPlan;
+import com.example.demo.model.SeatingPlan;
 import com.example.demo.repository.ExamRoomRepository;
 import com.example.demo.repository.ExamSessionRepository;
 import com.example.demo.repository.SeatingPlanRepository;
