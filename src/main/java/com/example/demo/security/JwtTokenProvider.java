@@ -23,15 +23,18 @@ public class JwtTokenProvider {
         this.validityInMs = validityInMs;
     }
 
-    public String generateToken(String username) {
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityInMs);
+    public String generateToken(Long id, String email, String role) {
 
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
+    Date now = new Date();
+    Date expiry = new Date(now.getTime() + validityInMs);
+
+    return Jwts.builder()
+            .setSubject(email)
+            .claim("id", id)
+            .claim("role", role)
+            .setIssuedAt(now)
+            .setExpiration(expiry)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
+}
 }
