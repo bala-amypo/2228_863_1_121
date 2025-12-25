@@ -4,30 +4,31 @@ import com.example.demo.exception.ApiException;
 import com.example.demo.model.ExamRoom;
 import com.example.demo.repository.ExamRoomRepository;
 import com.example.demo.service.ExamRoomService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ExamRoomServiceImpl implements ExamRoomService {
 
-    private final ExamRoomRepository repo;
-
-    public ExamRoomServiceImpl(ExamRoomRepository repo) {
-        this.repo = repo;
-    }
+    private final ExamRoomRepository examRoomRepository;
 
     @Override
-    public ExamRoom addRoom(ExamRoom r) {
-        if (repo.findByRoomNumber(r.getRoomNumber()).isPresent())
-            throw new ApiException("exists");
-
-        r.ensureCapacityMatches();
-        return repo.save(r);
+    public ExamRoom addRoom(ExamRoom room) {
+        if (examRoomRepository.findByRoomNumber(room.getRoomNumber()).isPresent()) {
+            throw new ApiException("Room with number " + room.getRoomNumber() + " already exists");
+        }
+        if (room.getRows() < 0) {
+            throw new ApiException("Rows cannot be negative");
+        }
+        room.ensureCapacityMatches();
+        return examRoomRepository.save(room);
     }
 
     @Override
     public List<ExamRoom> getAllRooms() {
-        return repo.findAll();
+        return examRoomRepository.findAll();
     }
 }
