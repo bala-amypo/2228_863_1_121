@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/plans")
-@RequiredArgsConstructor
+@RequestMapping("/seating-plan")
+@AllArgsConstructor
 public class SeatingPlanController {
 
     private final SeatingPlanService service;
