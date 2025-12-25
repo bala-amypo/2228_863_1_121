@@ -1,10 +1,10 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Student;
-import java.util.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StudentRepository {
+import java.util.Optional;
+
+public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByRollNumber(String rollNumber);
-    Student save(Student s);
-    List<Student> findAll();
 }

@@ -1,11 +1,12 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.ExamRoom;
-import java.util.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ExamRoomRepository {
+import java.util.List;
+import java.util.Optional;
+
+public interface ExamRoomRepository extends JpaRepository<ExamRoom, Long> {
     Optional<ExamRoom> findByRoomNumber(String roomNumber);
-    ExamRoom save(ExamRoom r);
-    List<ExamRoom> findAll();
     List<ExamRoom> findByCapacityGreaterThanEqual(int capacity);
 }
