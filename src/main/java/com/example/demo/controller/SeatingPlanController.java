@@ -13,20 +13,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeatingPlanController {
 
-    private final SeatingPlanService seatingPlanService;
+    private final SeatingPlanService service;
+    public SeatingPlanController(SeatingPlanService service){ this.service = service; }
 
-    @PostMapping("/generate/{sessionId}")
-    public ResponseEntity<SeatingPlan> generate(@PathVariable Long sessionId) {
-        return ResponseEntity.ok(seatingPlanService.generatePlan(sessionId));
-    }
-
+  
     @GetMapping("/{id}")
-    public ResponseEntity<SeatingPlan> get(@PathVariable Long id) {
-        return ResponseEntity.ok(seatingPlanService.getPlan(id));
+    public ResponseEntity<SeatingPlan> get(Long id){
+        return ResponseEntity.ok(service.getPlan(id));
     }
 
     @GetMapping("/session/{sessionId}")
-    public ResponseEntity<List<SeatingPlan>> list(@PathVariable Long sessionId) {
-        return ResponseEntity.ok(seatingPlanService.getPlansBySession(sessionId));
+    public ResponseEntity<List<SeatingPlan>> list(Long sessionId){
+        return ResponseEntity.ok(service.getPlansBySession(sessionId));
     }
 }
