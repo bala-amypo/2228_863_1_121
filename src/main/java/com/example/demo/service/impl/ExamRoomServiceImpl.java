@@ -17,13 +17,22 @@ public class ExamRoomServiceImpl implements ExamRoomService {
 
     @Override
     public ExamRoom addRoom(ExamRoom room) {
+
         if (examRoomRepository.findByRoomNumber(room.getRoomNumber()).isPresent()) {
             throw new ApiException("Room with number " + room.getRoomNumber() + " already exists");
         }
-        if (room.getRows() < 0) {
+
+        if (room.getRowCount() < 0) {
             throw new ApiException("Rows cannot be negative");
         }
-        room.ensureCapacityMatches();
+
+        if (room.getColumnCount() < 0) {
+            throw new ApiException("Columns cannot be negative");
+        }
+
+        // auto-calculate capacity
+        room.setCapacity(room.getRowCount() * room.getColumnCount());
+
         return examRoomRepository.save(room);
     }
 

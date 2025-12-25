@@ -39,4 +39,9 @@ public class ExamRoom {
     public String getRoomNumber() {
         return roomNumber;
     }
+    public Integer getRowCount() { return rowCount; }
+public Integer getColumnCount() { return columnCount; }
+public void setCapacity(Integer capacity) { this.capacity = capacity; }
+public String getRoomNumber() { return roomNumber; }
+
 }
