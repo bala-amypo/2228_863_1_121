@@ -38,39 +38,31 @@ public class AuthController {
     }
 
 
-   @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody AuthRequest request) {
- 
-    String encodedPassword = passwordEncoder.encode(request.getPassword());
- 
-    User user = new User();
-    user.setEmail(request.getEmail());
-    user.setPassword(encodedPassword);
-    user.setRole("USER");
- 
-    User savedUser = userService.register(user);
- 
-    String token = jwtTokenProvider.generateToken(
-            savedUser.getId(),
-            savedUser.getEmail(),
-            savedUser.getRole()
+   @PostMapping("/login")
+public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+
+    authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                    request.getEmail(),
+                    request.getPassword()
+            )
     );
- 
+
+    User user = userService.findByEmail(request.getEmail());
+
+    String token = jwtTokenProvider.generateToken(
+            user.getId(),
+            user.getEmail(),
+            user.getRole()
+    );
+
     return ResponseEntity.ok(
             new AuthResponse(
                     token,
-                    savedUser.getId(),
-                    savedUser.getEmail(),
-                    savedUser.getRole()
+                    user.getId(),
+                    user.getEmail(),
+                    user.getRole()
             )
     );
 }
-
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(AuthRequest req){ 
-        User user = userRepository.findByEmail(req.getEmail()).orElseThrow(() -> new RuntimeException("Invalid auth"));
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getRole());
-        return ResponseEntity.ok(new AuthResponse(token));
-    }
 }
