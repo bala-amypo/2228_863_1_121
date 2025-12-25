@@ -22,7 +22,7 @@ public class ExamRoomServiceImpl implements ExamRoomService {
         if (repo.findByRoomNumber(r.getRoomNumber()).isPresent())
             throw new ApiException("exists");
 
-        if (r.getRows() <= 0 || r.getColumns() <= 0)
+        if (r.getRows() == null || r.getColumns() == null || r.getRows() <= 0 || r.getColumns() <= 0)
             throw new ApiException("invalid room");
 
         r.ensureCapacityMatches();

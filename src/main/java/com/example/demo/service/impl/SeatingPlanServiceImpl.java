@@ -35,28 +35,30 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
         if (rooms.isEmpty())
             throw new ApiException("no room");
 
-        int students = session.getStudents().size();
+        int studentCount = session.getStudents().size();
 
         ExamRoom chosen = rooms.stream()
-                .filter(r -> r.getCapacity() >= students)
+                .filter(r -> r.getCapacity() >= studentCount)
                 .findFirst()
                 .orElseThrow(() -> new ApiException("no room"));
 
-        Map<String, String> map = new LinkedHashMap<>();
-        session.getStudents().forEach(s -> map.put(s.getRollNumber(), chosen.getRoomNumber()));
-
-        SeatingPlan p = new SeatingPlan();
-        p.setExamSession(session);
-        p.setRoom(chosen);
-        p.setGeneratedAt(LocalDateTime.now());
-
-        try {
-            p.setArrangementJson(new ObjectMapper().writeValueAsString(map));
-        } catch (Exception e) {
-            p.setArrangementJson("{}");
+        Map<String, String> arrangement = new LinkedHashMap<>();
+        for (Student s : session.getStudents()) {
+            arrangement.put(s.getRollNumber(), chosen.getRoomNumber());
         }
 
-        return planRepo.save(p);
+        SeatingPlan plan = new SeatingPlan();
+        plan.setExamSession(session);
+        plan.setRoom(chosen);
+        plan.setGeneratedAt(LocalDateTime.now());
+
+        try {
+            plan.setArrangementJson(new ObjectMapper().writeValueAsString(arrangement));
+        } catch (Exception e) {
+            plan.setArrangementJson("{}");
+        }
+
+        return planRepo.save(plan);
     }
 
     @Override

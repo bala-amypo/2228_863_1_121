@@ -14,7 +14,9 @@ public class ExamSessionServiceImpl implements ExamSessionService {
 
     private final ExamSessionRepository repo;
 
-    public ExamSessionServiceImpl(ExamSessionRepository repo, StudentRepository studentRepo) {
+    public ExamSessionServiceImpl(
+            ExamSessionRepository repo,
+            StudentRepository studentRepo) {
         this.repo = repo;
     }
 
