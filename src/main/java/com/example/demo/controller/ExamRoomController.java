@@ -2,29 +2,28 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ExamRoom;
 import com.example.demo.service.ExamRoomService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/rooms")
 public class ExamRoomController {
 
-    private final ExamRoomService examRoomService;
+    private final ExamRoomService service;
 
-    public ExamRoomController(ExamRoomService examRoomService) {
-        this.examRoomService = examRoomService;
+    public ExamRoomController(ExamRoomService service) {
+        this.service = service;
     }
+
     @PostMapping
-        public ResponseEntity<ExamRoom> add(ExamRoom r){
-        return ResponseEntity.ok(service.addRoom(r));
+    public ResponseEntity<ExamRoom> add(@RequestBody ExamRoom room) {
+        return ResponseEntity.ok(service.addRoom(room));
     }
-
 
     @GetMapping
-    public ResponseEntity<List<ExamRoom>> list(){
+    public ResponseEntity<List<ExamRoom>> list() {
         return ResponseEntity.ok(service.getAllRooms());
     }
 }
