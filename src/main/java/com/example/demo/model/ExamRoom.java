@@ -4,16 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ExamRoom {
-
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(unique = true)
     private String roomNumber;
     private Integer rows;
     private Integer columns;
@@ -21,7 +16,7 @@ public class ExamRoom {
 
     public void ensureCapacityMatches() {
         if (rows != null && columns != null) {
-            capacity = rows * columns;
+            this.capacity = rows * columns;
         }
     }
 }
