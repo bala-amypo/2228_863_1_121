@@ -21,18 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth") 
 public class AuthController {
-    private final UserService userService;
+     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
- 
+    private final PasswordEncoder passwordEncoder; // ✅ ADD THIS
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserRepository userRepository){
+    public AuthController(UserService userService,
+                          AuthenticationManager authenticationManager,
+                          JwtTokenProvider jwtTokenProvider,
+                          PasswordEncoder passwordEncoder) { // ✅ ADD THIS
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder; // ✅ ADD THIS
     }
+
 
    @PostMapping("/register")
 public ResponseEntity<?> register(@RequestBody AuthRequest request) {
