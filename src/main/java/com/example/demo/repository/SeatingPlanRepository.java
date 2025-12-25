@@ -1,10 +1,10 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.SeatingPlan;
-import java.util.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SeatingPlanRepository {
-    SeatingPlan save(SeatingPlan p);
-    Optional<SeatingPlan> findById(Long id);
+import java.util.List;
+
+public interface SeatingPlanRepository extends JpaRepository<SeatingPlan, Long> {
     List<SeatingPlan> findByExamSessionId(Long sessionId);
 }
