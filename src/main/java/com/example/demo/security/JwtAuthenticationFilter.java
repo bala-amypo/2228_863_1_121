@@ -4,56 +4,32 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-@Component
-public class JwtTokenProvider {
 
-    private final SecretKey key;
-    private final long jwtExpirationInMs;
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    public JwtTokenProvider(@Value("${app.jwtExpirationInMs:3600000}") long jwtExpirationInMs) {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        this.jwtExpirationInMs = jwtExpirationInMs;
+    private final JwtTokenProvider tokenProvider;
+
+    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
-    public String generateToken(Long userId, String email, String role) {
-        return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .claim("email", email)
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(key)
-                .compact();
-    }
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
-    public Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
+        String header = request.getHeader("Authorization");
 
-    public String getEmailFromToken(String token) {
-        return getClaims(token).get("email", String.class);
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            getClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            tokenProvider.validateToken(token);
         }
+
+        filterChain.doFilter(request, response);
     }
 }
