@@ -1,9 +1,15 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "exam_room")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ExamRoom {
 
     @Id
@@ -19,41 +25,4 @@ public class ExamRoom {
     private Integer columnCount;
 
     private Integer capacity;
-
-    public Integer getRowCount() {
-        return rowCount;
-    }
-
-    public Integer getColumnCount() {
-        return columnCount;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
-
-    public String getRoomNumber() {
-        return roomNumber;
-    }
-public Integer getRowCount() {
-    return rowCount;
-}
-
-public Integer getColumnCount() {
-    return columnCount;
-}
-
-public void setCapacity(Integer capacity) {
-    this.capacity = capacity;
-}
-
-public String getRoomNumber() {
-    return roomNumber;
-}
-
-
 }
