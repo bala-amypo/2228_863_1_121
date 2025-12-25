@@ -1,22 +1,51 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Table(name = "exam_room")
 public class ExamRoom {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
     private String roomNumber;
-    private Integer rows;
-    private Integer columns;
+
+    @Column(name = "row_count")
+    private Integer rowCount;
+
+    @Column(name = "column_count")
+    private Integer columnCount;
+
     private Integer capacity;
 
+    // ----- getters -----
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public Integer getRowCount() {
+        return rowCount;
+    }
+
+    public Integer getColumnCount() {
+        return columnCount;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    // ----- helper method used by service -----
     public void ensureCapacityMatches() {
-        if (rows != null && columns != null) {
-            this.capacity = rows * columns;
+        if (rowCount != null && columnCount != null) {
+            this.capacity = rowCount * columnCount;
         }
     }
 }
