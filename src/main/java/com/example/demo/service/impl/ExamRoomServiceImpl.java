@@ -22,15 +22,16 @@ public class ExamRoomServiceImpl implements ExamRoomService {
             throw new ApiException("Room with number " + room.getRoomNumber() + " already exists");
         }
 
-        if (room.getRowCount() < 0) {
-            throw new ApiException("Rows cannot be negative");
+        // validate values
+        if (room.getRowCount() == null || room.getRowCount() < 0) {
+            throw new ApiException("Row count must be >= 0");
         }
 
-        if (room.getColumnCount() < 0) {
-            throw new ApiException("Columns cannot be negative");
+        if (room.getColumnCount() == null || room.getColumnCount() < 0) {
+            throw new ApiException("Column count must be >= 0");
         }
 
-        // auto-calculate capacity
+        // calculate capacity
         room.setCapacity(room.getRowCount() * room.getColumnCount());
 
         return examRoomRepository.save(room);
