@@ -2,28 +2,39 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtTokenProvider {
 
-    private final Key key;
-    private final long validityInMs;
+    // 🔐 HARD-CODED SECRET (must be at least 32 characters for HS256)
+    private static final String SECRET_KEY =
+            "MY_SUPER_SECRET_JWT_KEY_9f3A7xQ2Lk8M0R4VZpT6H1WJ";
 
-    public JwtTokenProvider(String secret, long validityInMs) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMs = validityInMs;
+    // ⏱ Token validity: 1 hour
+    private static final long VALIDITY_IN_MS = 60 * 60 * 1000;
+
+    private final Key key;
+
+    public JwtTokenProvider() {
+        this.key = Keys.hmacShaKeyFor(
+                SECRET_KEY.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     public String generateToken(Long userId, String email, String role) {
+
         Claims claims = Jwts.claims();
         claims.put("userId", userId);
         claims.put("email", email);
         claims.put("role", role);
 
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityInMs);
+        Date expiry = new Date(now.getTime() + VALIDITY_IN_MS);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -42,17 +53,17 @@ public class JwtTokenProvider {
         }
     }
 
-    // ✅ REQUIRED BY TESTS
+    // ✅ REQUIRED BY YOUR TESTS
     public String getEmailFromToken(String token) {
         return parseClaims(token).get("email", String.class);
     }
 
-    // ✅ REQUIRED BY TESTS
+    // ✅ REQUIRED BY YOUR TESTS
     public String getRoleFromToken(String token) {
         return parseClaims(token).get("role", String.class);
     }
 
-    // ✅ REQUIRED BY TESTS
+    // ✅ REQUIRED BY YOUR TESTS
     public Long getUserIdFromToken(String token) {
         return parseClaims(token).get("userId", Long.class);
     }
