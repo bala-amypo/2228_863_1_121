@@ -16,13 +16,12 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-
         return new OpenAPI()
                 .info(new Info()
                         .title("University Course Transfer Validator API")
                         .version("1.0"))
                 .servers(List.of(
-                        new Server().url("https://9118.32procr.amypo.ai/")
+                        new Server().url("http://9119.32procr.amypo.ai")
                 ))
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearerAuth")
@@ -35,6 +34,6 @@ public class OpenApiConfig {
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
                         )
-                );
-    }
+                );
+    }
 }
