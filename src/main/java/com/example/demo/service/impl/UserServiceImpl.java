@@ -4,35 +4,30 @@ import com.example.demo.exception.ApiException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repo;
-    private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
+    // ✅ REQUIRED constructor for Spring
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public User register(User user) {
-        if (repo.findByEmail(user.getEmail()).isPresent())
-            throw new ApiException("exists");
-
-        user.setPassword(encoder.encode(user.getPassword()));
-        if (user.getRole() == null)
-            user.setRole("STAFF");
-
-        return repo.save(user);
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new ApiException("email exists");
+        }
+        return userRepository.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
-        return repo.findByEmail(email)
+        return userRepository
+                .findByEmail(email)
                 .orElseThrow(() -> new ApiException("user not found"));
     }
 }
