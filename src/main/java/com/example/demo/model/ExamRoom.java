@@ -16,13 +16,13 @@ public class ExamRoom {
     @Column(unique = true)
     private String roomNumber;
 
-    private Integer rows;
-    private Integer columns;
+    private Integer rowses;
+    private Integer columnses;
     private Integer capacity;
 
     public void ensureCapacityMatches() {
-        if (rows != null && columns != null) {
-            this.capacity = rows * columns;
+        if (rowsese != null && columnses != null) {
+            this.capacity = rowses * columnses;
         }
     }
 }
