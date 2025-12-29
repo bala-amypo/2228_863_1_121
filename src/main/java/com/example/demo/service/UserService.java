@@ -1,11 +1,10 @@
 package com.example.demo.service;
 
-import org.springframework.stereotype.Service;
+import com.example.demo.model.User;
 
-@Service
-public class UserService {
+import java.util.Optional;
 
-    public boolean validateUser(String email, String password) {
-        return email.equals("admin@gmail.com") && password.equals("admin123");
-    }
+public interface UserService {
+    User save(User user);
+    Optional<User> findByEmail(String email);
 }

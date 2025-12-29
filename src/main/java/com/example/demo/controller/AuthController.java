@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -13,32 +15,35 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     public AuthController(UserService userService,
-                          JwtTokenProvider jwtTokenProvider) {
+                          JwtTokenProvider jwtTokenProvider,
+                          AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
+    public AuthResponse login(@RequestBody AuthRequest request) {
 
-        String email = request.get("email");
-        String password = request.get("password");
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-        // Dummy validation (replace with DB later)
-        if (!userService.validateUser(email, password)) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
+        User user = userService.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Long userId = 1L;
-        String role = "ROLE_ADMIN";
+        String token = jwtTokenProvider.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
 
-        String token = jwtTokenProvider.generateToken(userId, email, role);
-
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "email", email
-        ));
+        return new AuthResponse(token);
     }
 }
