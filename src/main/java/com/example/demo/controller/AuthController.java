@@ -6,11 +6,10 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;   // ✅ REQUIRED IMPORT
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +20,7 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
+    // ⚠️ EXACT constructor required by tests
     public AuthController(AuthenticationManager authenticationManager,
                           JwtTokenProvider jwtTokenProvider,
                           UserService userService) {
@@ -34,19 +34,16 @@ public class AuthController {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        request.getEmail(), request.getPassword()
                 )
         );
 
-        // Dummy user object to satisfy test expectations
-        User user = new User();
-        user.setId(1L);
+        User user = userService.findByEmail(request.getEmail()).orElseThrow();
 
         String token = jwtTokenProvider.generateToken(
                 user.getId(),
-                request.getEmail(),
-                "USER"
+                user.getEmail(),
+                user.getRole()
         );
 
         return ResponseEntity.ok(new AuthResponse(token));
@@ -54,9 +51,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
+
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
+
         return ResponseEntity.ok(userService.register(user));
     }
 }
