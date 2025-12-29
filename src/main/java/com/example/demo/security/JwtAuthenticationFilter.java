@@ -6,6 +6,7 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import com.example.demo.security.JwtTokenProvider;
 
 import java.io.IOException;
 
