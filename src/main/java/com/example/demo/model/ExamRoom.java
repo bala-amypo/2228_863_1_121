@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter @Setter @Builder
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "exam_room")
 public class ExamRoom {
 
@@ -16,13 +19,18 @@ public class ExamRoom {
     @Column(unique = true)
     private String roomNumber;
 
-    private Integer rowses;
-    private Integer columnses;
+    
+    @Column(name = "room_rows")
+    private Integer rows;
+
+    @Column(name = "room_columns")
+    private Integer columns;
+
     private Integer capacity;
 
     public void ensureCapacityMatches() {
-        if (rowsese != null && columnses != null) {
-            this.capacity = rowses * columnses;
+        if (rows != null && columns != null) {
+            this.capacity = rows * columns;
         }
     }
 }
