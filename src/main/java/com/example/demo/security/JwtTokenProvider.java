@@ -4,7 +4,10 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
+import org.springframework.stereotype.Component;
 
+
+@Component 
 public class JwtTokenProvider {
 
     private final Key key;
