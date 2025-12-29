@@ -1,60 +1,67 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.security.JwtTokenProvider;
+import com.example.demo.payload.AuthRequest;
+import com.example.demo.payload.AuthResponse;
 import com.example.demo.service.UserService;
+import com.example.demo.security.JwtUtil;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
 
+    private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final AuthenticationManager authManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepo;
+    private final JwtUtil jwtUtil;
 
     public AuthController(
+            AuthenticationManager authenticationManager,
             UserService userService,
-            AuthenticationManager authManager,
-            JwtTokenProvider jwtTokenProvider,
-            UserRepository userRepo) {
+            JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.authManager = authManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepo = userRepo;
+        this.jwtUtil = jwtUtil;
     }
 
+    // =========================
+    // REGISTER USER
+    // =========================
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-        User user = User.builder()
-                .name(req.getName())
-                .email(req.getEmail())
-                .password(req.getPassword())
-                .role(req.getRole())
-                .build();
+    public ResponseEntity<?> register(@RequestBody User user) {
 
-        return ResponseEntity.ok(userService.register(user));
+        User savedUser = userService.registerUser(user);
+
+        return ResponseEntity.ok(savedUser);
     }
 
+    // =========================
+    // LOGIN USER
+    // =========================
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
-        User user = userRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
 
-        String token = jwtTokenProvider.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
+            String token = jwtUtil.generateToken(authentication.getName());
 
-        return ResponseEntity.ok(new AuthResponse(token));
+            return ResponseEntity.ok(new AuthResponse(token));
+
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
     }
 }
