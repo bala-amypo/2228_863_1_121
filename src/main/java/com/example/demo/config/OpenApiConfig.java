@@ -18,7 +18,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("University Course Transfer Validator API")
+                        .title("Exam Seating Arrangement Generator")
                         .version("1.0"))
                 .servers(List.of(
                         new Server().url("https://9119.32procr.amypo.ai/")
