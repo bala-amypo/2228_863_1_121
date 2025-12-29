@@ -2,7 +2,6 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-
 import java.security.Key;
 import java.util.Date;
 
@@ -11,17 +10,16 @@ public class JwtTokenProvider {
     private final Key key;
     private final long expiration;
 
-    // ✅ REQUIRED by tests
+    // Required by tests
     public JwtTokenProvider(String secret, long expiration) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.expiration = expiration;
     }
 
-    // ✅ OPTIONAL no-arg constructor (safe fallback)
+    // Safe default constructor
     public JwtTokenProvider() {
         this.key = Keys.hmacShaKeyFor(
-                "default_secret_key_which_is_long_enough_for_hmac_sha256"
-                        .getBytes()
+                "default_secret_key_which_is_long_enough_for_hmac_sha256".getBytes()
         );
         this.expiration = 3600000;
     }
@@ -54,7 +52,6 @@ public class JwtTokenProvider {
         return getClaims(token).get("role", String.class);
     }
 
-    // ✅ TEST EXPECTS THIS
     public Long getUserIdFromToken(String token) {
         return getClaims(token).get("userId", Long.class);
     }
