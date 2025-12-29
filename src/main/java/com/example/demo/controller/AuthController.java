@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,31 +16,36 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
     public AuthController(AuthenticationManager authenticationManager,
-                          JwtTokenProvider jwtTokenProvider) {
+                          JwtTokenProvider jwtTokenProvider,
+                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
-        try {
-            Authentication authentication =
-                    authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    request.getEmail(),
-                                    request.getPassword()
-                            )
-                    );
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-            String token = jwtTokenProvider.generateToken(authentication.getName());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-            return ResponseEntity.ok(new AuthResponse(token));
+        // ✅ CORRECT METHOD CALL
+        String token = jwtTokenProvider.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
 
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(401).body("Invalid email or password");
-        }
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

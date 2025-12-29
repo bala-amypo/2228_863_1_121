@@ -1,35 +1,38 @@
 package com.example.demo.security;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+
 @Component
 public class JwtTokenProvider {
-    private final String secret;
-    private final int expiration;
-    public JwtTokenProvider(
-            @Value("${jwt.secret:defaultSecret}") String secret,
-            @Value("${jwt.expiration:3600000}") int expiration
-    ) {
-        this.secret = secret;
-        this.expiration = expiration;
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.validity}")
+    private long validity;
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
+
+    // ✅ FIXED SIGNATURE
     public String generateToken(Long userId, String email, String role) {
-        return userId + "|" + email + "|" + role;
-    }
-    public boolean validateToken(String token) {
-        return token != null && token.contains("|");
-    }
-    public Long getUserIdFromToken(String token) {
-        if (token == null) return null;
-        return Long.parseLong(token.split("\\|")[0]);
-    }
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + validity);
 
-    public String getEmailFromToken(String token) {
-        if (token == null) return null;
-        return token.split("\\|")[1];
-    }
-
-    public String getRoleFromToken(String token) {
-        if (token == null) return null;
-        return token.split("\\|")[2];
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("userId", userId)
+                .claim("role", role)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 }

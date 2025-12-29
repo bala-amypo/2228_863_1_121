@@ -1,38 +1,30 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.exception.ApiException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDetailsService {
 
     private final UserRepository repo;
-    private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository repo) {
         this.repo = repo;
-        this.encoder = encoder;
     }
 
     @Override
-    public User register(User user) {
-        if (repo.findByEmail(user.getEmail()).isPresent())
-            throw new ApiException("exists");
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
 
-        user.setPassword(encoder.encode(user.getPassword()));
-        if (user.getRole() == null)
-            user.setRole("STAFF");
+        User user = repo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return repo.save(user);
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return repo.findByEmail(email)
-                .orElseThrow(() -> new ApiException("user not found"));
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .build();
     }
 }
