@@ -54,13 +54,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-<!-- 
-        <!-- MySQL Driver -->
-       <dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-j</artifactId>
-    <scope>runtime</scope>
-</dependency> -->
+
 
            
 
