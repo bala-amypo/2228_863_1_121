@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.model.User;
+import org.springframework.stereotype.Service;
 
-public interface UserService {
-    User register(User user);
-    User findByEmail(String email);
+@Service
+public class UserService {
+
+    public boolean validateUser(String email, String password) {
+        return email.equals("admin@gmail.com") && password.equals("admin123");
+    }
 }
