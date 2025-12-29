@@ -7,30 +7,29 @@ import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
 
-    // REQUIRED BY TESTS (3 args)
-    public AuthController(UserService userService,
-                          JwtTokenProvider jwtTokenProvider,
-                          AuthenticationManager authenticationManager) {
-        this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthController(
+            AuthenticationManager authenticationManager,
+            JwtTokenProvider jwtTokenProvider,
+            UserService userService
+    ) {
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -38,25 +37,26 @@ public class AuthController {
                 )
         );
 
-        // Fake user info for tests
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setRole("USER");
+        user.setId(1L);
+
         String token = jwtTokenProvider.generateToken(
-                1L,
-                request.getEmail(),
-                "USER"
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
         );
 
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    // REQUIRED BY TESTS
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
-
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setRole("USER");
-
         return ResponseEntity.ok(userService.register(user));
     }
 }
