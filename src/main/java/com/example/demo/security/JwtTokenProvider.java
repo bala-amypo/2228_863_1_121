@@ -15,6 +15,9 @@ public class JwtTokenProvider {
     @Value("${jwt.validity}")
     private long validity;
 
+    // ==============================
+    // Generate JWT
+    // ==============================
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
@@ -26,6 +29,34 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // ==============================
+    // Validate JWT
+    // ==============================
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException ex) {
+            return false;
+        }
+    }
+
+    // ==============================
+    // Extract email (subject)
+    // ==============================
+    public String getEmailFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    // ==============================
+    // Extract role
+    // ==============================
     public String getRoleFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
