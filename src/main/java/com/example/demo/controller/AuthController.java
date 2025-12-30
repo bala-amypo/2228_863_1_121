@@ -20,7 +20,6 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    // EXACT constructor required by tests
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
                           JwtTokenProvider jwtTokenProvider,
